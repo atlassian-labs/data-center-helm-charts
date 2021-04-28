@@ -1,6 +1,6 @@
 # confluence
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.9.0-jdk11](https://img.shields.io/badge/AppVersion-7.9.0--jdk11-informational?style=flat-square)
+![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 7.9.0-jdk11](https://img.shields.io/badge/AppVersion-7.9.0--jdk11-informational?style=flat-square)
 
 A chart for installing Confluence DC on Kubernetes
 
@@ -82,6 +82,7 @@ Kubernetes: `>=1.17.x-0`
 | serviceAccount.name | string | `nil` | Specifies the name of the ServiceAccount to be used by the pods. If not specified, but the the "serviceAccount.create" flag is set, then the ServiceAccount name will be auto-generated, otherwise the 'default' ServiceAccount will be used. |
 | synchrony.enabled | bool | `false` | True if Synchrony (i.e. Collaborative Editing) should be enabled. This will result in a separate StatefulSet and Service to be created for Synchrony. If disabled, then Collaborative Editing will be disabled in Confluence. |
 | synchrony.ingressUrl | string | `nil` | The base URL of the Synchrony service. This will be the URL that users' browsers will be given to communicate with Synchrony, as well as the URL that the Confluence service will use to communicate directly with Synchrony, so the URL must be resovable both from inside and outside the Kubernetes cluster. |
+| synchrony.managed | bool | `false` | True if Confluence should manage Synchrony rather than create a standalone cluster. See https://confluence.atlassian.com/doc/possible-confluence-and-synchrony-configurations-958779064.html |
 | synchrony.ports.hazelcast | int | `5701` | The port on which the Synchrony container listens for Hazelcast traffic |
 | synchrony.ports.http | int | `8091` | The port on which the Synchrony container listens for HTTP traffic |
 | synchrony.readinessProbe.failureThreshold | int | `30` | The number of consecutive failures of the Synchrony container readiness probe before the pod fails readiness checks |
