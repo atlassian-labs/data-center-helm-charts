@@ -87,25 +87,29 @@ bootstrap_nfs() {
   if grep -q nfs: ${chartValueFiles} /dev/null || grep -q 'nfs[.]' <<<"$EXTRA_PARAMETERS"; then
     echo "This configuration requires a private NFS server, starting..."
     "$BASEDIR"/start_nfs_server.sh "${TARGET_NAMESPACE}" "${PRODUCT_RELEASE_NAME}"
-    local nfs_server_pod_name=$(kubectl get pod -n "${TARGET_NAMESPACE}" -l role=${PRODUCT_RELEASE_NAME}-nfs-server -o jsonpath="{.items[0].metadata.name}")
 
     for ((try = 0; try < 60; try++)) ; do
-      echo "Detecting NFS server IP..."
-      local nfs_server_ip=$(kubectl get pods -n $TARGET_NAMESPACE "$nfs_server_pod_name" -o json | jq -r .status.podIP)
-
-      if [ -z "$nfs_server_ip" ]; then
-        echo "NFS server not found."
+      echo "Detecting NFS K8s Service IP..."
+      local nfs_server_ip
+      if ! nfs_server_ip="$(kubectl get service -n $TARGET_NAMESPACE "${PRODUCT_RELEASE_NAME}-nfs-server" -o jsonpath='{.spec.clusterIP}')"; then
+        echo "NFS K8s Service IP not found!"
         exit 1
       fi
-
-      if [ "$nfs_server_ip" != "null" ] ; then
+      
+      if [ -n "$nfs_server_ip" ] && [ "$nfs_server_ip" != "null" ]; then
         break
       fi
+      
       sleep 1
     done
 
-    echo Detected NFS server IP: $nfs_server_ip
-    valueOverrides+="--set volumes.sharedHome.persistentVolume.nfs.server=$nfs_server_ip "
+    if [ -n "$nfs_server_ip" ] && [ "$nfs_server_ip" != "null" ]; then
+      echo "Detected NFS K8s Service IP: ${nfs_server_ip}"
+      valueOverrides+="--set volumes.sharedHome.persistentVolume.nfs.server=$nfs_server_ip "
+    else
+      echo "NFS K8s Service IP not found!"
+      exit 1
+    fi
   fi
 }
 
