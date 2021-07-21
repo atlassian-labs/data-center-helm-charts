@@ -33,6 +33,7 @@ The diagram below provides a high level overview of what a typical deployment mi
 * [Configuration](docs/CONFIGURATION.md) - a deep dive into the configuration parameters
 * [Platforms support](docs/PLATFORMS.md) - how to allow support for different platforms
 * [Examples](docs/examples/examples.md) - various configuration examples
+* [Troubleshooting](docs/TROUBLESHOOTING.md) - how to debug issues with installation
 
 ## Feedback
 
